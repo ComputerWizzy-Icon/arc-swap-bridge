@@ -228,7 +228,7 @@ All routes are statically prerendered where possible; client-only feature logic 
 
 ### Landing Page
 
-![ArcFlow Landing](./public/screenshots/landing.png)
+![ArcFlow Landing](./public/screenshots/landing.jpg)
 
 ### Swap
 
@@ -236,11 +236,11 @@ All routes are statically prerendered where possible; client-only feature logic 
 
 ### Bridge
 
-![Bridge](./public/screenshots/bridge.png)
+![Bridge](./public/screenshots/bridge.jpg)
 
 ### Developer Playground
 
-![Developer Playground](./public/screenshots/playground.png)
+![Developer Playground](./public/screenshots/playground.jpg)
 
 ## Demo
 
