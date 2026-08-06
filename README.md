@@ -232,7 +232,7 @@ All routes are statically prerendered where possible; client-only feature logic 
 
 ### Swap
 
-![Swap](./public/screenshots/swap.png)
+![Swap](./public/screenshots/swap.jng)
 
 ### Bridge
 
