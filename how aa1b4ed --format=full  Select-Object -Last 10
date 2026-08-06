@@ -1,0 +1,189 @@
+[33mcommit aa1b4edef688f5ee2bf6d2d2af5697bfacf81d36[m
+Author: ComputerWizzy-Icon <computerwizzy100@gmail.com>
+Commit: ComputerWizzy-Icon <computerwizzy100@gmail.com>
+
+    Initial commit: ArcFlow — USDC-native dashboard on Arc
+    
+    Production-ready Next.js/TypeScript reference app for Circle Arc App Kit.
+    
+    Features:
+    - Swap: same-chain stablecoin swaps on Arc with live quotes & slippage control
+    - Bridge: cross-chain native USDC via Circle CCTP (fast/standard) with step tracking
+    - Send: USDC/EURC/USDT transfers with pre-sign fee estimates
+    - Unified Balance: pooled USDC across chains via Circle Gateway (deposit/spend)
+    - Developer Playground: live, runnable App Kit recipes with code + responses
+    - Landing page: Arc intro, feature grid, supported chains
+    
+    Core: lib/arc (kit singleton, chain/token registries, formatting, errors),
+    wagmi to App Kit viem adapter bridge, TanStack Query feature hooks.
+    
+    Verified: tsc --noEmit clean, eslint clean, next build (9 static routes).
+    
+    Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+
+[1mdiff --git a/.env.example b/.env.example[m
+[1mnew file mode 100644[m
+[1mindex 0000000..12407ba[m
+[1m--- /dev/null[m
+[1m+++ b/.env.example[m
+[36m@@ -0,0 +1,16 @@[m
+[32m+[m[32m# --- Public application metadata (exposed to the browser) ---[m
+[32m+[m[32mNEXT_PUBLIC_ARC_CHAIN_ID=5042002[m
+[32m+[m[32mNEXT_PUBLIC_ARC_EXPLORER_URL=https://testnet.arcscan.app[m
+[32m+[m
+[32m+[m[32m# Optional: override the primary Arc Testnet RPC endpoint. When empty, the app[m
+[32m+[m[32m# falls back to viem's built-in Arc Testnet RPC list. Public RPCs are shared and[m
+[32m+[m[32m# may be rate-limited; set a private endpoint for production stability.[m
+[32m+[m[32mNEXT_PUBLIC_ARC_PRIMARY_RPC_URL=https://rpc.testnet.arc.network[m
+[32m+[m
+[32m+[m[32m# WalletConnect Cloud project id (https://cloud.walletconnect.com).[m
+[32m+[m[32m# Optional: when empty only injected/browser wallets are offered.[m
+[32m+[m[32mNEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=[m
+[32m+[m
+[32m+[m[32m# Circle App Kit key from the Circle Console (https://console.circle.com).[m
+[32m+[m[32m# Optional for swaps, recommended for production monetization/fees.[m
+[32m+[m[32mNEXT_PUBLIC_CIRCLE_KIT_KEY=[m
+[1mdiff --git a/.gitignore b/.gitignore[m
+[1mnew file mode 100644[m
+[1mindex 0000000..6ae6d55[m
+[1m--- /dev/null[m
+[1m+++ b/.gitignore[m
+[36m@@ -0,0 +1,42 @@[m
+[32m+[m[32m# Dependencies[m
+[32m+[m[32m/node_modules[m
+[32m+[m[32m/.pnp[m
+[32m+[m[32m.pnp.*[m
+[32m+[m
+[32m+[m[32m# Next.js[m
+[32m+[m[32m/.next/[m
+[32m+[m[32m/out/[m
+[32m+[m[32mnext-env.d.ts[m
+[32m+[m
+[32m+[m[32m# Production build[m
+[32m+[m[32m/build[m
+[32m+[m[32m/dist[m
+[32m+[m
+[32m+[m[32m# Environment (never commit secrets)[m
+[32m+[m[32m.env[m
+[32m+[m[32m.env.local[m
+[32m+[m[32m.env.*.local[m
+[32m+[m
+[32m+[m[32m# Debug logs[m
+[32m+[m[32mnpm-debug.log*[m
+[32m+[m[32myarn-debug.log*[m
+[32m+[m[32myarn-error.log*[m
+[32m+[m[32m.pnpm-debug.log*[m
+[32m+[m
+[32m+[m[32m# Testing[m
+[32m+[m[32m/coverage[m
+[32m+[m[32m/playwright-report[m
+[32m+[m[32m/test-results[m
+[32m+[m
+[32m+[m[32m# Editor / OS[m
+[32m+[m[32m.DS_Store[m
+[32m+[m[32m*.pem[m
+[32m+[m[32m.vscode/*[m
+[32m+[m[32m!.vscode/extensions.json[m
+[32m+[m[32m.idea[m
+[32m+[m
+[32m+[m[32m# TypeScript[m
+[32m+[m[32m*.tsbuildinfo[m
+[32m+[m
+[32m+[m[32m# Vercel[m
+[32m+[m[32m.vercel[m
+[1mdiff --git a/.prettierrc.json b/.prettierrc.json[m
+[1mnew file mode 100644[m
+[1mindex 0000000..55ee088[m
+[1m--- /dev/null[m
+[1m+++ b/.prettierrc.json[m
+[36m@@ -0,0 +1,6 @@[m
+[32m+[m[32m{[m
+[32m+[m[32m  "plugins": ["prettier-plugin-tailwindcss"],[m
+[32m+[m[32m  "semi": true,[m
+[32m+[m[32m  "singleQuote": false,[m
+[32m+[m[32m  "trailingComma": "all"[m
+[32m+[m[32m}[m
+[1mdiff --git a/README.md b/README.md[m
+[1mnew file mode 100644[m
+[1mindex 0000000..db26373[m
+[1m--- /dev/null[m
+[1m+++ b/README.md[m
+[36m@@ -0,0 +1,27 @@[m
+[32m+[m[32m# ARC Developer Dashboard[m
+[32m+[m
+[32m+[m[32mA production-grade developer dashboard for interacting with Arc Testnet.[m
+[32m+[m
+[32m+[m[32m## Purpose[m
+[32m+[m
+[32m+[m[32mProvide developers with a reliable, accessible interface for monitoring Arc Testnet, managing an Arc-compatible wallet connection, inspecting recent activity, and testing RPC infrastructure.[m
+[32m+[m
+[32m+[m[32m## Architecture[m
+[32m+[m
+[32m+[m[32mThe application uses Next.js App Router, a typed viem and wagmi blockchain layer, TanStack Query for remote-state caching, ConnectKit for wallet UX, and server-side RPC proxy routes for provider selection and credential protection.[m
+[32m+[m
+[32m+[m[32m## Supported features[m
+[32m+[m
+[32m+[m[32mThe planned dashboard includes wallet connection and network switching, Arc network metrics, recent transactions, RPC diagnostics, portfolio visibility, configurable refresh settings, and an About Arc section.[m
+[32m+[m
+[32m+[m[32m## Setup[m
+[32m+[m
+[32m+[m[32mInstall project dependencies, copy `.env.example` to `.env.local`, configure the required values, and start the development server. Exact commands are added after dependencies are installed.[m
+[32m+[m
+[32m+[m[32m## Environment variables[m
+[32m+[m
+[32m+[m[32mSee `.env.example` for the public Arc metadata, WalletConnect project ID, server-side RPC provider URLs, request timeout, and retry configuration.[m
+[32m+[m
+[32m+[m[32m## Deployment[m
+[32m+[m
+[32m+[m[32mThe dashboard is designed for deployment to Vercel or a Node-compatible Next.js host. Production deployment requires environment validation, linting, type checking, a production build, and an Arc RPC smoke test.[m
+[1mdiff --git a/app/balance/page.tsx b/app/balance/page.tsx[m
+[1mnew file mode 100644[m
+[1mindex 0000000..8318781[m
+[1m--- /dev/null[m
+[1m+++ b/app/balance/page.tsx[m
+[36m@@ -0,0 +1,20 @@[m
+[32m+[m[32mimport type { Metadata } from "next";[m
+[32m+[m
+[32m+[m[32mimport { FeatureShell } from "@/components/layout/feature-shell";[m
+[32m+[m[32mimport { UnifiedBalanceView } from "@/features/unified-balance/unified-balance-view";[m
+[32m+[m
+[32m+[m[32mexport const metadata: Metadata = {[m
+[32m+[m[32m  title: "Unified Balance · ArcFlow",[m
+[32m+[m[32m  description: "Manage your pooled USDC balance across chains with Circle Gateway.",[m
+[32m+[m[32m};[m
+[32m+[m
+[32m+[m[32mexport default function UnifiedBalancePage() {[m
+[32m+[m[32m  return ([m
+[32m+[m[32m    <FeatureShell[m
+[32m+[m[32m      title="Unified Balance"[m
+[32m+[m[32m      description="Deposit USDC into a pooled account across chains, then spend from any source to any destination. Powered by Circle Gateway."[m
+[32m+[m[32m    >[m
+[32m+[m[32m      <UnifiedBalanceView />[m
+[32m+[m[32m    </FeatureShell>[m
+[32m+[m[32m  );[m
+[32m+[m[32m}[m
+[1mdiff --git a/app/bridge/page.tsx b/app/bridge/page.tsx[m
+[1mnew file mode 100644[m
+[1mindex 0000000..7ae9a42[m
+[1m--- /dev/null[m
+[1m+++ b/app/bridge/page.tsx[m
+[36m@@ -0,0 +1,20 @@[m
+[32m+[m[32mimport type { Metadata } from "next";[m
+[32m+[m
+[32m+[m[32mimport { FeatureShell } from "@/components/layout/feature-shell";[m
+[32m+[m[32mimport { BridgeCard } from "@/features/bridge/bridge-card";[m
+[32m+[m
+[32m+[m[32mexport const metadata: Metadata = {[m
+[32m+[m[32m  title: "Bridge · ArcFlow",[m
+[32m+[m[32m  description: "Move native USDC across chains via Circle CCTP.",[m
+[32m+[m[32m};[m
+[32m+[m
+[32m+[m[32mexport default function BridgePage() {[m
+[32m+[m[32m  return ([m
+[32m+[m[32m    <FeatureShell[m
+[32m+[m[32m      title="Bridge"[m
+[32m+[m[32m      description="Transfer native USDC across chains using Circle CCTP. Choose fast or standard finality, preview fees, and track each step of the cross-chain transfer."[m
+[32m+[m[32m    >[m
+[32m+[m[32m      <BridgeCard />[m
+[32m+[m[32m    </FeatureShell>[m
+[32m+[m[32m  );

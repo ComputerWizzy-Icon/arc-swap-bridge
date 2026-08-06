@@ -27,13 +27,13 @@ Everything runs on USDC-native gas. There is no separate gas token to manage —
 
 ## What it does
 
-| Route | Feature | What you can do |
-| --- | --- | --- |
-| `/` | **Landing** | Overview of Arc, the feature set, supported chains, and a developer CTA. |
-| `/swap` | **Swap** | Estimate and execute a same-chain token swap on Arc Testnet (e.g. USDC → EURC) via `AppKit.swap`. |
-| `/bridge` | **Bridge** | Move USDC cross-chain using Circle CCTP, with a live multi-step progress panel and explorer links. |
-| `/send` | **Send** | Estimate fees/gas and send USDC to any EVM address on a chosen chain. |
-| `/balance` | **Unified Balance** | Read an aggregated USDC balance across Gateway-supported chains, deposit into the unified balance, and spend from multiple sources at once. |
+| Route         | Feature                  | What you can do                                                                                                                              |
+| ------------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/`           | **Landing**              | Overview of Arc, the feature set, supported chains, and a developer CTA.                                                                     |
+| `/swap`       | **Swap**                 | Estimate and execute a same-chain token swap on Arc Testnet (e.g. USDC → EURC) via `AppKit.swap`.                                            |
+| `/bridge`     | **Bridge**               | Move USDC cross-chain using Circle CCTP, with a live multi-step progress panel and explorer links.                                           |
+| `/send`       | **Send**                 | Estimate fees/gas and send USDC to any EVM address on a chosen chain.                                                                        |
+| `/balance`    | **Unified Balance**      | Read an aggregated USDC balance across Gateway-supported chains, deposit into the unified balance, and spend from multiple sources at once.  |
 | `/playground` | **Developer Playground** | Run real App Kit calls (`estimateSwap`, `estimateBridge`, `estimateSend`, `getBalances`) and inspect the responses next to the exact source. |
 
 Feature pages gate on a connected wallet — until you connect, you'll see a "Connect your wallet" prompt rather than an empty form.
@@ -118,13 +118,13 @@ That's it for local development. Connect your wallet on any feature page to star
 
 Copy `.env.example` to `.env.local`. Only public (`NEXT_PUBLIC_*`) values are used — there are **no server secrets** in this app, so nothing here is sensitive, but `.env.local` is gitignored regardless.
 
-| Variable | Required | Purpose |
-| --- | --- | --- |
-| `NEXT_PUBLIC_ARC_CHAIN_ID` | ✅ (defaulted) | Arc Testnet chain id — `5042002`. |
-| `NEXT_PUBLIC_ARC_EXPLORER_URL` | ✅ (defaulted) | Block explorer base — `https://testnet.arcscan.app`. |
-| `NEXT_PUBLIC_ARC_PRIMARY_RPC_URL` | optional | Override the primary Arc RPC. Empty → viem's built-in Arc Testnet RPCs. Set a private endpoint for stability. |
-| `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | optional | [WalletConnect Cloud](https://cloud.walletconnect.com) id. Empty → only injected/browser wallets are offered. |
-| `NEXT_PUBLIC_CIRCLE_KIT_KEY` | optional | Circle App Kit key from the [Circle Console](https://console.circle.com). Optional for estimates/swaps; recommended for production. |
+| Variable                               | Required       | Purpose                                                                                                                             |
+| -------------------------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_ARC_CHAIN_ID`             | ✅ (defaulted) | Arc Testnet chain id — `5042002`.                                                                                                   |
+| `NEXT_PUBLIC_ARC_EXPLORER_URL`         | ✅ (defaulted) | Block explorer base — `https://testnet.arcscan.app`.                                                                                |
+| `NEXT_PUBLIC_ARC_PRIMARY_RPC_URL`      | optional       | Override the primary Arc RPC. Empty → viem's built-in Arc Testnet RPCs. Set a private endpoint for stability.                       |
+| `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | optional       | [WalletConnect Cloud](https://cloud.walletconnect.com) id. Empty → only injected/browser wallets are offered.                       |
+| `NEXT_PUBLIC_CIRCLE_KIT_KEY`           | optional       | Circle App Kit key from the [Circle Console](https://console.circle.com). Optional for estimates/swaps; recommended for production. |
 
 The app runs out of the box with the defaults — the optional keys just unlock WalletConnect and production-grade Circle access.
 
@@ -132,7 +132,7 @@ The app runs out of the box with the defaults — the optional keys just unlock 
 
 ## Using the app
 
-1. **Connect a wallet.** Click *Connect* in the top nav. Injected wallets (MetaMask, etc.) always work; WalletConnect appears if you set a project id.
+1. **Connect a wallet.** Click _Connect_ in the top nav. Injected wallets (MetaMask, etc.) always work; WalletConnect appears if you set a project id.
 2. **Swap** (`/swap`): pick a from/to token and amount, click **Estimate** to preview the quote, then **Swap** to execute. Swaps are anchored to Arc Testnet.
 3. **Bridge** (`/bridge`): choose source and destination chains and a USDC amount. **Estimate** previews the CCTP quote; **Bridge** executes and streams a multi-step progress panel (each step links to the explorer). Bridge is USDC-only.
 4. **Send** (`/send`): choose a chain and token, enter a recipient EVM address and amount. The address is validated inline; **Estimate** shows fee + gas, **Send** submits.
@@ -154,12 +154,12 @@ All actions surface success/failure as toasts, and errors are run through `toUse
 
 Recipes included:
 
-| Recipe | App Kit method | Example |
-| --- | --- | --- |
-| Swap | `swap.estimateSwap` | USDC → EURC on Arc |
-| Bridge | `bridge.estimateBridge` | Arc → Base Sepolia |
-| Send | `send.estimateSend` | requires a valid recipient address |
-| Unified balance | `unifiedBalance.getBalances` | aggregated USDC across chains |
+| Recipe          | App Kit method               | Example                            |
+| --------------- | ---------------------------- | ---------------------------------- |
+| Swap            | `swap.estimateSwap`          | USDC → EURC on Arc                 |
+| Bridge          | `bridge.estimateBridge`      | Arc → Base Sepolia                 |
+| Send            | `send.estimateSend`          | requires a valid recipient address |
+| Unified balance | `unifiedBalance.getBalances` | aggregated USDC across chains      |
 
 These are read-only estimates/reads, so they're safe to run repeatedly without spending funds.
 
@@ -221,6 +221,32 @@ All routes are statically prerendered where possible; client-only feature logic 
 - **RPC rate-limited / flaky** — set `NEXT_PUBLIC_ARC_PRIMARY_RPC_URL` to a private endpoint.
 - **Live transactions fail** — confirm the connected wallet holds testnet USDC (used for both the transfer and gas).
 - **Windows `useContext` build error** — see the Windows note under [Testing & verification](#testing--verification).
+
+---
+
+## Screenshots
+
+### Landing Page
+
+![ArcFlow Landing](./public/screenshots/landing.png)
+
+### Swap
+
+![Swap](./public/screenshots/swap.png)
+
+### Bridge
+
+![Bridge](./public/screenshots/bridge.png)
+
+### Developer Playground
+
+![Developer Playground](./public/screenshots/playground.png)
+
+## Demo
+
+Watch ArcFlow in action:
+
+[▶ Demo Video](https://youtu.be/FZTOnYo86E8)
 
 ---
 
