@@ -68,7 +68,7 @@ export function BalanceCard({
                       className="flex items-center justify-between text-xs"
                     >
                       <span className="text-muted-foreground">
-                        {chainLabel(chain.chain as any)}
+                        {chainLabel(chain.chain)}
                       </span>
                       <span className="font-medium tabular-nums">
                         {formatToken(chain.confirmedBalance, "USDC")}

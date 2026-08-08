@@ -47,9 +47,16 @@ export function formatToken(
   return `${formatAmount(amount, maxDecimals)} ${symbol}`;
 }
 
-/** Human label for a chain id. */
-export function chainLabel(id: ChainId): string {
-  return getChain(id).label;
+/**
+ * Human label for a chain id. Falls back to a humanized identifier for chains
+ * outside the curated registry — a unified-balance breakdown can name any
+ * Gateway-supported chain, not just the ones ArcFlow lists, so this must never
+ * throw on an unknown id.
+ */
+export function chainLabel(id: ChainId | string): string {
+  const meta = getChain(id as ChainId);
+  if (meta) return meta.label;
+  return String(id).replace(/_/g, " ");
 }
 
 /**

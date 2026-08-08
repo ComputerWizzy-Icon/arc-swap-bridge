@@ -118,4 +118,4 @@ export const chainsFor = (
   feature: keyof ChainMeta["features"],
 ): ChainMeta[] => ALL_CHAINS.filter((chain) => chain.features[feature]);
 
-export const getChain = (id: ChainId): ChainMeta => CHAINS[id];
+export const getChain = (id: ChainId): ChainMeta | undefined => CHAINS[id];

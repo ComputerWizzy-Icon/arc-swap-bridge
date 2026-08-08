@@ -71,6 +71,9 @@ export function useUnifiedBalance() {
       const result = await getAppKit().unifiedBalance.getBalances({
         token: "USDC",
         sources: { adapter },
+        // Arc is a testnet-only deployment; without this the SDK defaults to
+        // "mainnet" and queries the wrong Gateway for a testnet wallet.
+        networkType: "testnet",
       });
       return {
         token: result.token,
