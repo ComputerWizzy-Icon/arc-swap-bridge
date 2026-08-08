@@ -11,6 +11,7 @@ Everything runs on USDC-native gas. There is no separate gas token to manage —
 ## Table of contents
 
 - [What it does](#what-it-does)
+- [Deployed contract (Arc Testnet)](#deployed-contract-arc-testnet)
 - [Tech stack](#tech-stack)
 - [Project structure](#project-structure)
 - [Prerequisites](#prerequisites)
@@ -37,6 +38,24 @@ Everything runs on USDC-native gas. There is no separate gas token to manage —
 | `/playground` | **Developer Playground** | Run real App Kit calls (`estimateSwap`, `estimateBridge`, `estimateSend`, `getBalances`) and inspect the responses next to the exact source. |
 
 Feature pages gate on a connected wallet — until you connect, you'll see a "Connect your wallet" prompt rather than an empty form.
+
+---
+
+## Deployed contract (Arc Testnet)
+
+ArcFlow ships with a first-party ERC-20 test token, **ArcFlowToken (AFLOW)**, deployed and verified on Arc Testnet. It serves as a demo asset for exercising the Swap and Send flows against a token you control, alongside Circle's native USDC/EURC.
+
+| | |
+| --- | --- |
+| **Contract** | [`0xf1790fca85dd8a0340671eb44a8815dc15190a41`](https://testnet.arcscan.app/address/0xf1790fca85dd8a0340671eb44a8815dc15190a41) |
+| **Name / Symbol** | ArcFlowToken / AFLOW |
+| **Network** | Arc Testnet (chain id `5042002`) |
+| **Standard** | ERC-20 (`transfer` / `approve` / `transferFrom`) + owner-only `mint` |
+| **Initial supply** | 1,000,000 AFLOW (18 decimals) |
+| **Compiler** | Solidity `0.8.28`, optimizer enabled (200 runs), MIT |
+| **Source** | ✅ Verified on [ArcScan](https://testnet.arcscan.app/address/0xf1790fca85dd8a0340671eb44a8815dc15190a41?tab=contract) |
+
+> The rest of ArcFlow reads contract addresses from Circle's live App Kit reference at runtime and never hardcodes them — AFLOW is the one asset this project deploys itself.
 
 ---
 
